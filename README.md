@@ -14,9 +14,8 @@ This analysis will be focused on using League of Legends in-game statistics to p
 
 ## Baseline Model
 
-
-
 My baseline model is a decision tree classifier that takes in these columns of the dataset: league, heralds, xpdiffat15, golddiffat15, result, firstdragon, firstbaron. 'League' contains nominal data of the region the game was played in. For my model, I trained it with data from the major regions: LCK, LCS, LEC. The LPL data has missing data, so LPL games cannot be used for model training or testing. 'Heralds' contains the number of heralds a team took that game. It is a numerical data and the values are either 0, 1, or 2. 'xpdiffat15' and 'golddiffat15' are both ratio data. They contain the gold/xp difference at 15 minutes, in which negative values would mean being behind in gold, 0 would mean that there is no gold advantage for either team, and positive values would mean that they are ahead in gold. 'firstdragon' and 'firstbaron' contains boolean values of 0 and 1 and are ratio data. A 0 means that the team did not get first dragon or first baron, and it is a true zero. For my baseline model, I one-hot encoded the league column because it is a categorical column. I also binarized the 'xpdiffat15' column by setting a threshold at 2000. I set this threshold because smaller leads such as 100 xp is not noteworthy and is not meaningful enough to be considered a useful lead. The current model has a training accuracy of 91.9% and a testing accuracy of 77.8%. This is not a good model because it seems to be overfitted to the training data and does not work nearly as well for unseen data.
+
 ---
 
 ## Final Model
