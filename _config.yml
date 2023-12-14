@@ -1,0 +1,6 @@
+remote_theme: pages-themes/midnight@v0.2.0
+plugins:
+- jekyll-remote-theme # add this line to the plugins list if you already have one
+
+title: League of Legends Early Game Analysis
+description: This is a website that reports my findings for my DSC80 Project
