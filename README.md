@@ -20,28 +20,10 @@ My baseline model is a decision tree classifier that takes in these columns of t
 
 ## Final Model
 
-| league   | towermissing=False | towermissing=True |
-|:---------|-------------------:|------------------:|
-| LCK      |   0.459646         | 0.238363          |
-| LCS      |   0.301181         | 0.156186          |
-| LEC      |   0.239173         | 0.12403           |
-| LPL      |   nan              | 0.481421          |
-
-| league   | towermissing=False | towermissing=True |
-|:---------|-------------------:|------------------:|
-| LCK      | 0.259107           | 0.245952          |
-| LCS      | 0.216218           | 0.240873          |
-| LEC      | 0.281739           | 0.255403          |
-| LPL      | 0.242935           | 0.257773          |
-
-<iframe src="assets/LCK_tower_fig.html" width=600 height=450 frameBorder=0></iframe>
+In my final model, I added two more features in the heralds and golddiffat15 column. I squared the heralds column so that instead of containg 0's, 1's, and 2's, it'll contain 0's, 1's, and 4's. I made this change because I beleive that getting 2 heralds is a much more indicative sign of winning than getting 1 herald, so the difference between 0 and 1 should not be treated the same as the difference between 1 and 2 (note: 0, 1, or 2 heralds can be taken in a game, teams can choose to not take herald). The next feature I implemented was standardizing the golddiffat15 column. By standardizing the golddiffat15 column, it will be easier to see whether a lead is true significant or not, relative to the other numbers in the dataset. For instance, instead of seeing the value 1000 in the golddiffat15 column, seeing a number such as 0.2 would indicate that this gold lead is above the mean (0 is the mean), and we can see how far a this number is from the mean in terms of standard deviations.
 
 
-From the table, the distribution looks different. In the permutation test, we get a p-value of 0, which means that we can reject the null hypothesis that they come from the distribution. The towermissing column is NMAR in relation to the league column.
-
-<iframe src="assets/side_vs_towermissing.html" width=600 height=450 frameBorder=0></iframe>
-
-In the dataset, 50% of the towermissing was on red side and the other 50% of the tower missing was on blue side (there are two sides, 1 for each team). When I shuffle the 'towermissing' column and run permutation tests, I get this visualization, and the p-value is 0.524, which means we fail to reject the null hypothesis and the towermissing column MAR in relation to side. 
+For my final model, I continued to use the decision tree classifier, but I changed the hyperparameters. In the baseline model, I used entropy as the criterion, set the max depth at 15, and set min_samples_split at 10. As can be seen by the difference in model accuracy, the model was overfitted because the max depth was too high. In my new model, the criterion is still entropy, but the max depth is now set at 3 and the min_samples_split is set at 2. After changing the hyperparameters and encoding two new features, my new model's training accuracy is 83.6% and its testing accuracy is 83.2%. While the training accuracy for my model decreased, the testing accuracy increased by 6%. This is an improvement because high training accuracy can simply mean overfitting, but higher testing accuracy means that the model is more generalizable and works better on unseen data, which is what I want in this model. 
 
 ---
 
