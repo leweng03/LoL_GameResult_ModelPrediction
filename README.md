@@ -29,16 +29,8 @@ For my final model, I continued to use the decision tree classifier, but I chang
 
 ## Fairness Analysis
 
-<iframe src="assets/hypothesis_fig.html" width=600 height=450 frameBorder=0></iframe>
+To see whether the model works better or worse on different groups, I decided to compare its performance on the LEC/LCS vs its performance on the LCK. I decided to combine the LEC and LCS because their performance at international events are relatively the same and they have similar playstyles. For my evaluation metric, I will use accuracy. The null hypothesis is that the model is fair and any differences are due to random chance. The alternate hypothesis is that the model is not fair and any differences are not due to random chance. To test this, I will use a t-test set at a significance level of 0.05.
 
-This visualization is created by shuffling the 'result' column and getting the distribution of wins with a gold lead at 15 minutes. The red line is the observed statistic, which is not part of the empirical distribution. 
-
-The null hypothesis is: Having a Gold Lead at 15 minutes does not affect winning chances.
-The alternate hypothesis is: Having a Gold Lead at 15 minutes does not affect winning chances.
-
-
-The p-value is 0, so we can reject the null hypothesis that gold leads at 15 minutes do not affect winning chances.
-
-The conclusion is teams that are ahead in gold at the 15 minute mark tend to win those games. While there are other factors that affect game result, such as difference between team strength, the data suggests that getting ahead in the first 15 minutes seems to allow professional teams to reliably convert that lead into a win.
+My model's test accuracy for the LEC/LCS is 81.6%, while its test accuracy for the LCK is 85.0%. When I run permutation tests, I get a p-value of 0.163, meaning that 16.3% of the simulated results for the LEC/LCS are greater than 85.0%. With a significance p-level set at 0.05, we fail to reject the null hypothesis and cannot conclude that my final model is unfair.
 
 ---
