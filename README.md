@@ -6,50 +6,20 @@ by Lewis Weng
 
 ---
 
-## Introduction
+## Framing the Problem
 
-This analysis is based on the League of Legends Competitive Matches dataset, which can be found on the website "Oracle's Elixir". In this dataset, there are 149400 rows and 123 columns. The data includes the champions picked and banned, the teams that played, their regions, objectives taken, game time, and differences in gold and experience at the 15 minute mark. Every row of the column equates to one player. Every 10 columns there are 2 columns that contains information about the 2 teams. Every match is 12 rows.
-
-This project will be focusing on these columns: league, firstdragon, firstherald, firsttower, golddiffat15, and result. New columns that are based on the existing columns will be created for the purposes of this project. The 'league' refers to the league in which the game was played in. 'firstdragon' refers to whether a team has claimed first dragon (0 for No, 1 for Yes). 'firstherald' refers to whether a team has taken the first herald (0 for No, 1 for Yes). 'firsttower' refers to whether a team has taken the first tower (0 for No, 1 for Yes). 'golddiffat15' refers to the gold difference betweeen a player and their opposing counterpart, or a team and their opponent. The 'result' column contains data on whether a team or player won the game (0 for Loss, 1 for Win). 
-
-The goal of this project is to determine whether having a gold lead in the early game leads to winning games. This dataset contains game information from professional League of Legends esports games from 2022. Other League of Legends players may be interested in this information because it can help them identify what can help them win more games. People that bet on League of Legends esports games can also use this information to evaluate the strength of teams or determine to likelihood of their bets succeeding while the game is in progress. 
+This analysis will be focused on using League of Legends in-game statistics to predict the outcome of a game. For the model, I will be building a binary classification model that uses a decision tree to predict a win or loss. This model will be predicting a win or loss because fans care about whether their teams win or lose. This model can help someone understand whether their team is more likely to win or lose. This model will mainly use metrics within the first 20 minutes of the game. The metrics used are xp difference at 15 minutes, gold difference at 15 minutes, first dragon, first baron, first herald, and league. These information will be available to the users while the game is still in progress. Most of this information (baron spawns at 20 minutes) will available by the 20 minute mark, which almost all games surpass. For the metric, I've decided to use accuracy. In League of Legends, there is always a winner and a loser, so models are not incentivized to predict win or lose more than the other. Since this is a game, false positives and false negatives are not important for consdieration, so recall, precision, and F-1 score are not used.
 
 ---
 
-## Cleaning and EDA
-
-For my analysis, I convert the columns that consist of 0's and 1's to boolean values of True and False. These columns are 'firstdragon', 'firstherald', 'firsttower', 'result'. I also removed the rows in the dataset that contained null values. These rows were missing information that were needed for the analysis. I added a column named 'goldlead@15'. If golddiffat15 was over 0, goldlead@15 is True. Otherwise, goldlead@15 is False. This column helps me with my analysis by identifing the presence of gold lead.
-
-| league   | firstdragon   | firstherald   | firsttower   |   golddiffat15 | result   | goldlead@15   |
-|:---------|:--------------|:--------------|:-------------|---------------:|:---------|:--------------|
-| LCK      | False         | True          | True         |           4757 | False    | True          |
-| LCK      | True          | False         | False        |          -4757 | True     | False         |
-| LCK      | False         | True          | True         |          -1045 | False    | False         |
-| LCK      | True          | False         | False        |           1045 | True     | True          |
-| LCK      | True          | True          | False        |           1309 | True     | True          |
-
-This is an example of what the dataset looked like after doing data cleaning and keeping relevant columns.
-
-<iframe src="assets/goldfig15.html" width=600 height=450 frameBorder=0></iframe>
-
-From this visualization we can see that the chances of winning are highly elevated when a team has a gold lead at 15 minutes. Teams that have a gold lead at 15 minutes have won 72% of the time, while teams that didn't have a gold lead at 15 minutes won 28% of the time.
+## Baseline Model
 
 
-<iframe src="assets/gold15_tower_fig.html" width=600 height=450 frameBorder=0></iframe>
 
-This visualization shows the overlapping distribution for the gold difference at 15 minutes when first tower was taken vs first tower was not taken with the orange distribution being when first tower was not taken, the blue distribution being when first tower was taken, and the red in the center being the overlapping part of the distributions. This graph suggests that teams that have taken first tower tend to have a bigger gold lead.
-
-
-| goldlead@15   |   result |   firstherald |   firstdragon |   firsttower |
-|:--------------|---------:|--------------:|--------------:|-------------:|
-| False         | 0.271654 |      0.359252 |      0.462598 |     0.195866 |
-| True          | 0.728346 |      0.640748 |      0.537402 |     0.804134 |
-
-These are some aggregate statistics that show the relation between goldlead@15 and other columns. Interestingly, taking first dragon does not necessarily mean that will be ahead in gold at 15 minutes. Other factor are more indicative, such as firsttower and firstherald. This suggests that taking first dragon may not be as useful as taking first herald or first tower.
-
+My baseline model is a decision tree classifier that takes in these columns of the dataset: league, heralds, xpdiffat15, golddiffat15, result, firstdragon, firstbaron. 'League' contains nominal data of the region the game was played in. For my model, I trained it with data from the major regions: LCK, LCS, LEC. The LPL data has missing data, so LPL games cannot be used for model training or testing. 'Heralds' contains the number of heralds a team took that game. It is a numerical data and the values are either 0, 1, or 2. 'xpdiffat15' and 'golddiffat15' are both ratio data. They contain the gold/xp difference at 15 minutes, in which negative values would mean being behind in gold, 0 would mean that there is no gold advantage for either team, and positive values would mean that they are ahead in gold. 'firstdragon' and 'firstbaron' contains boolean values of 0 and 1 and are ratio data. A 0 means that the team did not get first dragon or first baron, and it is a true zero. For my baseline model, I one-hot encoded the league column because it is a categorical column. I also binarized the 'xpdiffat15' column by setting a threshold at 2000. I set this threshold because smaller leads such as 100 xp is not noteworthy and is not meaningful enough to be considered a useful lead. The current model has a training accuracy of 91.9% and a testing accuracy of 77.8%. This is not a good model because it seems to be overfitted to the training data and does not work nearly as well for unseen data.
 ---
 
-## Assessment of Missingness
+## Final Model
 
 | league   | towermissing=False | towermissing=True |
 |:---------|-------------------:|------------------:|
@@ -76,7 +46,7 @@ In the dataset, 50% of the towermissing was on red side and the other 50% of the
 
 ---
 
-## Hypothesis Testing
+## Fairness Analysis
 
 <iframe src="assets/hypothesis_fig.html" width=600 height=450 frameBorder=0></iframe>
 
